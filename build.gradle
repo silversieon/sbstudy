@@ -29,3 +29,20 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+processResources {
+    dependsOn 'copyResources'
+}
+
+tasks.register('copyResources', Copy) {
+    from './SBstudy-Config'
+    include '*.properties'
+    into 'src/main/resources/'
+}
+
+test {
+    doFirst {
+        def profile = project.hasProperty('profile') ? project.property('profile').toString() : 'local'
+        jvmArgs = ["-Dspring.profiles.active=${profile}"]
+    }
+}
