@@ -1,0 +1,3 @@
+[submodule "SBstudy-Config"]
+	path = SBstudy-Config
+	url = https://github.com/Comeoksal/SBstudy-Config.git
