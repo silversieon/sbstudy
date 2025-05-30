@@ -1,10 +1,13 @@
 package com.likelion.sbstudy.global.jwt;
 
 import com.likelion.sbstudy.domain.auth.exception.AuthErrorCode;
+import com.likelion.sbstudy.domain.user.entity.Role;
 import com.likelion.sbstudy.global.exception.CustomException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,11 +33,24 @@ public class JwtProvider {
         this.refreshTokenExpireTime = refreshTokenExpireTime;
     }
 
-    public String createAccessToken(String username) {
+    public void addJwtToCookie(HttpServletResponse response, String token, String name, long maxAge) {
+        Cookie cookie = new Cookie(name, token);
+        cookie.setHttpOnly(true);
+        //cookie.setSecure(true); // HTTPS 환경에서만 전송되게
+        cookie.setPath("/");
+        cookie.setMaxAge((int) maxAge / 1000); // 단위: 초
+        response.addCookie(cookie);
+    }
+
+    public String createAccessToken(String username, String role, String provider) {
         Date now = new Date();
-        return Jwts.builder()
+        Claims claims = Jwts.claims()
                 .setSubject(username)
-                .setId(String.valueOf(username))
+                .setId(username); // tokenId 대용
+        claims.put("roles", role);         // ex: ["ROLE_USER"]
+        claims.put("provider", provider);   // ex: "google"
+        return Jwts.builder()
+                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + accessTokenExpireTime))
                 .signWith(key, SignatureAlgorithm.HS256)
