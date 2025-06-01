@@ -21,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+
     @Transactional
     public SignUpResponse signUp(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -34,6 +35,7 @@ public class UserService {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(encodedPassword)
+                .provider("custom")
                 .build();
 
         // 저장 및 로깅
@@ -42,5 +44,7 @@ public class UserService {
 
         return userMapper.toSignUpResponse(savedUser);
     }
+
+
 }
 
