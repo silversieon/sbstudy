@@ -26,6 +26,6 @@ public class CreateBookRequest {
     private String category;
 
     @Schema(description = "출간날짜", example = "2025년 3월 22일")
-    private String publishDate;
+    private String publishedDate;
 
 }

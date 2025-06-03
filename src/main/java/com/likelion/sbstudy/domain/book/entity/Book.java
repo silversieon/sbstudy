@@ -8,13 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="book")
@@ -44,4 +44,14 @@ public class Book extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String publishedDate;
+
+    public void update(String title, String author, String publisher, int price, String description, String category, String publishedDate) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.price = price;
+        this.description = description;
+        this.category = category;
+        this.publishedDate = publishedDate;
+    }
 }
