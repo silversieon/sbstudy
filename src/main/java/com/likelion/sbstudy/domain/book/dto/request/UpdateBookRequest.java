@@ -26,6 +26,6 @@ public class UpdateBookRequest {
     private String category;
 
     @Schema(description = "출간날짜", example = "2023년 2월 7일")
-    private String publishDate;
+    private String publishedDate;
 
 }
