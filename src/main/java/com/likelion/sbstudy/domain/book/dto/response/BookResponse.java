@@ -38,3 +38,4 @@ public class BookResponse {
     @Schema(description = "이미지 URL 리스트")
     private List<String> bookImagesUrl;
 }
+
