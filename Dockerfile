@@ -10,3 +10,4 @@ WORKDIR /app
 COPY --from=builder /app/app.jar app.jar
 COPY --from=builder /app/application.properties application.properties
 ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["/bin/bash", "-c", "sleep 5000"]
