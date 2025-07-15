@@ -25,35 +25,35 @@ import lombok.NoArgsConstructor;
 @Table(name = "book")
 public class Book extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+  @Column(name = "title", nullable = false)
+  private String title;
 
-    @Column(name = "author", nullable = false)
-    private String author;
+  @Column(name = "author", nullable = false)
+  private String author;
 
-    @Column(name = "publisher", nullable = false)
-    private String publisher;
+  @Column(name = "publisher", nullable = false)
+  private String publisher;
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
+  @Column(name = "price", nullable = false)
+  private Integer price;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+  @Column(name = "description", nullable = false)
+  private String description;
 
-    @Column(name = "release_date", nullable = false)
-    private String releaseDate;
+  @Column(name = "release_date", nullable = false)
+  private String releaseDate;
 
-    @Column(name = "category_list", nullable = false)
-    private List<Category> categoryList;
+  @Column(name = "category_list", nullable = false)
+  private List<Category> categoryList;
 
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookImage> bookImages = new ArrayList<>();
+  @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<BookImage> bookImages = new ArrayList<>();
 
-    public void addBookImages(List<BookImage> bookImages) {
-        this.bookImages = bookImages;
-    }
+  public void addBookImages(List<BookImage> bookImages) {
+    this.bookImages = bookImages;
+  }
 }

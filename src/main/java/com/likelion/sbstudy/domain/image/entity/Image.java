@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,14 +20,13 @@ import lombok.NoArgsConstructor;
 @Table(name = "image")
 public class Image {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+  @Column(name = "image_url", nullable = false)
+  private String imageUrl;
 
-    @Column(name = "file_name", nullable = false)
-    private String originalFileName;
+  @Column(name = "file_name", nullable = false)
+  private String originalFileName;
 }
-

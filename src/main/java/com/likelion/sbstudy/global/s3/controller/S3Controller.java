@@ -19,30 +19,29 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "S3", description = "이미지 관리 API")
 public class S3Controller {
 
-    private final S3Service s3Service;
+  private final S3Service s3Service;
 
-    @Operation(summary = "이미지 업로드 API", description = "이미지를 업로드하고 URL을 리턴받는 API")
-    @PostMapping(value = "/image-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BaseResponse<S3Response>> uploadImage(
-            @RequestParam PathName pathName, MultipartFile file) {
+  @Operation(summary = "이미지 업로드 API", description = "이미지를 업로드하고 URL을 리턴받는 API")
+  @PostMapping(value = "/image-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<BaseResponse<S3Response>> uploadImage(
+      @RequestParam PathName pathName, MultipartFile file) {
 
-        S3Response s3Response = s3Service.uploadImage(pathName, file);
-        return ResponseEntity.ok(BaseResponse.success("이미지 업로드에 성공했습니다.", s3Response));
-    }
+    S3Response s3Response = s3Service.uploadImage(pathName, file);
+    return ResponseEntity.ok(BaseResponse.success("이미지 업로드에 성공했습니다.", s3Response));
+  }
 
-    @Operation(summary = "S3 파일 전체 조회 API", description = "해당 경로의 모든 파일 목록을 조회합니다.")
-    @GetMapping("/image-list")
-    public ResponseEntity<BaseResponse<List<String>>> listFiles(@RequestParam PathName pathName) {
-        List<String> files = s3Service.getAllFiles(pathName);
-        return ResponseEntity.ok(BaseResponse.success("파일 목록 조회에 성공했습니다.", files));
-    }
+  @Operation(summary = "S3 파일 전체 조회 API", description = "해당 경로의 모든 파일 목록을 조회합니다.")
+  @GetMapping("/image-list")
+  public ResponseEntity<BaseResponse<List<String>>> listFiles(@RequestParam PathName pathName) {
+    List<String> files = s3Service.getAllFiles(pathName);
+    return ResponseEntity.ok(BaseResponse.success("파일 목록 조회에 성공했습니다.", files));
+  }
 
-    @Operation(summary = "S3 파일 삭제 API", description = "파일명을 기반으로 이미지를 삭제합니다.")
-    @DeleteMapping("/{pathName}/{fileName}")
-    public ResponseEntity<BaseResponse<String>> deleteFile(
-            @PathVariable PathName pathName,
-            @PathVariable String fileName) {
-        s3Service.deleteFile(pathName, fileName);
-        return ResponseEntity.ok(BaseResponse.success("파일 삭제에 성공했습니다."));
-    }
+  @Operation(summary = "S3 파일 삭제 API", description = "파일명을 기반으로 이미지를 삭제합니다.")
+  @DeleteMapping("/{pathName}/{fileName}")
+  public ResponseEntity<BaseResponse<String>> deleteFile(
+      @PathVariable PathName pathName, @PathVariable String fileName) {
+    s3Service.deleteFile(pathName, fileName);
+    return ResponseEntity.ok(BaseResponse.success("파일 삭제에 성공했습니다."));
+  }
 }

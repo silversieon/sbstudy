@@ -24,60 +24,59 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
+  private final JwtProvider jwtProvider;
+  private final UserRepository userRepository;
 
-    @Override
-    @Transactional
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String provider = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
-        String email = null;
+  @Override
+  @Transactional
+  public void onAuthenticationSuccess(
+      HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+      throws IOException {
+    OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+    String provider =
+        ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+    String email = null;
 
-        switch (provider) {
-            case "kakao":
-                Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
-                if (kakaoAccount != null) {
-                    email = (String) kakaoAccount.get("email");
-                }
-                break;
-            case "naver":
-                Map<String, Object> naverResponse = oAuth2User.getAttribute("response");
-                if (naverResponse != null) {
-                    email = (String) naverResponse.get("email");
-                }
-                break;
-            case "google":
-                email = oAuth2User.getAttribute("email");
-                break;
-            default:
-                throw new CustomException(UserErrorCode.USER_NOT_FOUND);
+    switch (provider) {
+      case "kakao":
+        Map<String, Object> kakaoAccount = oAuth2User.getAttribute("kakao_account");
+        if (kakaoAccount != null) {
+          email = (String) kakaoAccount.get("email");
         }
-
-        if (email == null) {
-            throw new CustomException(UserErrorCode.USER_NOT_FOUND);
+        break;
+      case "naver":
+        Map<String, Object> naverResponse = oAuth2User.getAttribute("response");
+        if (naverResponse != null) {
+          email = (String) naverResponse.get("email");
         }
-
-        User user = userRepository.findByUsername(email)
-                .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
-
-        String accessToken = jwtProvider.createAccessToken(
-                user.getUsername(),
-                user.getRole().toString(),
-                provider
-        );
-
-        String refreshToken = jwtProvider.createRefreshToken(
-                user.getUsername(),
-                UUID.randomUUID().toString()
-        );
-
-        user.createRefreshToken(refreshToken);
-
-        log.info("로그인 성공: {}", user.getUsername());
-
-        response.addHeader("Authorization", "Bearer " + accessToken);
-        response.sendRedirect("/swagger-ui/index.html#/");
+        break;
+      case "google":
+        email = oAuth2User.getAttribute("email");
+        break;
+      default:
+        throw new CustomException(UserErrorCode.USER_NOT_FOUND);
     }
+
+    if (email == null) {
+      throw new CustomException(UserErrorCode.USER_NOT_FOUND);
+    }
+
+    User user =
+        userRepository
+            .findByUsername(email)
+            .orElseThrow(() -> new CustomException(UserErrorCode.USER_NOT_FOUND));
+
+    String accessToken =
+        jwtProvider.createAccessToken(user.getUsername(), user.getRole().toString(), provider);
+
+    String refreshToken =
+        jwtProvider.createRefreshToken(user.getUsername(), UUID.randomUUID().toString());
+
+    user.createRefreshToken(refreshToken);
+
+    log.info("로그인 성공: {}", user.getUsername());
+
+    response.addHeader("Authorization", "Bearer " + accessToken);
+    response.sendRedirect("/swagger-ui/index.html#/");
+  }
 }

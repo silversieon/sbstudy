@@ -18,33 +18,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final UserMapper userMapper;
 
-    @Transactional
-    public SignUpResponse signUp(SignUpRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new CustomException(UserErrorCode.USERNAME_ALREADY_EXISTS);
-        }
-
-        // 비밀번호 인코딩
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-
-        // 유저 엔티티 생성
-        User user = User.builder()
-                .username(request.getUsername())
-                .password(encodedPassword)
-                .provider("custom")
-                .build();
-
-        // 저장 및 로깅
-        User savedUser = userRepository.save(user);
-        log.info("New user registered: {}", savedUser.getUsername());
-
-        return userMapper.toSignUpResponse(savedUser);
+  @Transactional
+  public SignUpResponse signUp(SignUpRequest request) {
+    if (userRepository.existsByUsername(request.getUsername())) {
+      throw new CustomException(UserErrorCode.USERNAME_ALREADY_EXISTS);
     }
 
+    // 비밀번호 인코딩
+    String encodedPassword = passwordEncoder.encode(request.getPassword());
 
+    // 유저 엔티티 생성
+    User user =
+        User.builder()
+            .username(request.getUsername())
+            .password(encodedPassword)
+            .provider("custom")
+            .build();
+
+    // 저장 및 로깅
+    User savedUser = userRepository.save(user);
+    log.info("New user registered: {}", savedUser.getUsername());
+
+    return userMapper.toSignUpResponse(savedUser);
+  }
 }
-
