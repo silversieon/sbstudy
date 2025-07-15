@@ -50,6 +50,7 @@ public class Book extends BaseTimeEntity {
   @Column(name = "category_list", nullable = false)
   private List<Category> categoryList;
 
+  @Builder.Default
   @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BookImage> bookImages = new ArrayList<>();
 
