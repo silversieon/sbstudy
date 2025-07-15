@@ -7,4 +7,4 @@ COPY build/libs/*SNAPSHOT.jar app.jar
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY --from=builder /app/app.jar app.jar
-ENTRYPOINT ["/bin/bash", "-c", "sleep 5000"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=dev"]
