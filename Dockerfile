@@ -1,5 +1,5 @@
 # 1단계: JAR 파일 복사
-FROM openjdk:21-jdk-slim as builder
+FROM openjdk:21-jdk-slim AS builder
 WORKDIR /app
 COPY build/libs/*SNAPSHOT.jar app.jar
 
