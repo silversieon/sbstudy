@@ -54,9 +54,5 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            sudo docker rm -f sb-study-container
-            sudo docker run -d --name sb-study-container \
-                -p ${{ secrets.SPRINGBOOT_PORT }}:${{ secrets.SPRINGBOOT_PORT }} \
-                ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            sudo docker image prune -f
+            cd ~
+            docker compose up -d
