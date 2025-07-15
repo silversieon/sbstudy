@@ -66,13 +66,6 @@ spotless {
     }
 }
 
-processResources {
-    from("${rootDir}/SBstudy-Config") {
-        include 'application-dev.properties'
-        into ''
-    }
-}
-
 tasks.named('test') {
     useJUnitPlatform()
 }
