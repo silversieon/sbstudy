@@ -8,22 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class BookMapper {
 
-    public BookResponse toBookResponse(Book book) {
-        return BookResponse.builder()
-                .id(book.getId())
-                .title(book.getTitle())
-                .author(book.getAuthor())
-                .publisher(book.getPublisher())
-                .price(book.getPrice())
-                .description(book.getDescription())
-                .releaseDate(book.getReleaseDate())
-                .categoryList(book.getCategoryList())
-                .bookImagesUrl(
-                        book.getBookImages().stream()
-                                .map(BookImage::getImageUrl)
-                                .toList()
-                )
-                .build();
-    }
-
+  public BookResponse toBookResponse(Book book) {
+    return BookResponse.builder()
+        .id(book.getId())
+        .title(book.getTitle())
+        .author(book.getAuthor())
+        .publisher(book.getPublisher())
+        .price(book.getPrice())
+        .description(book.getDescription())
+        .releaseDate(book.getReleaseDate())
+        .categoryList(book.getCategoryList())
+        .bookImagesUrl(book.getBookImages().stream().map(BookImage::getImageUrl).toList())
+        .build();
+  }
 }

@@ -23,20 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "User", description = "User 관리 API")
 public class UserController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    @Operation(summary = "회원가입 API", description = "사용자 회원가입을 위한 API")
-    @PostMapping("/sign-up")
-    public ResponseEntity<BaseResponse<SignUpResponse>> signUp(
-            @RequestBody @Valid SignUpRequest signUpRequest) {
-        SignUpResponse signUpResponse = userService.signUp(signUpRequest);
-        return ResponseEntity.ok(BaseResponse.success("회원가입에 성공했습니다.", signUpResponse));
-    }
+  @Operation(summary = "회원가입 API", description = "사용자 회원가입을 위한 API")
+  @PostMapping("/sign-up")
+  public ResponseEntity<BaseResponse<SignUpResponse>> signUp(
+      @RequestBody @Valid SignUpRequest signUpRequest) {
+    SignUpResponse signUpResponse = userService.signUp(signUpRequest);
+    return ResponseEntity.ok(BaseResponse.success("회원가입에 성공했습니다.", signUpResponse));
+  }
 
-    @Operation(summary = "회원 전체 조회", description = "회원 목록 볼 때 사용하는 API")
-    @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<User>>> list() {
-        return ResponseEntity.ok(BaseResponse.success("모든 회원 조회 완료.", List.of()));
-    }
+  @Operation(summary = "회원 전체 조회", description = "회원 목록 볼 때 사용하는 API")
+  @GetMapping("/list")
+  public ResponseEntity<BaseResponse<List<User>>> list() {
+    return ResponseEntity.ok(BaseResponse.success("모든 회원 조회 완료.", List.of()));
+  }
 }
-

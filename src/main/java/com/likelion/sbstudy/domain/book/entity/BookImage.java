@@ -23,14 +23,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "book_image")
 public class BookImage {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+  @Column(name = "image_url", nullable = false)
+  private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "book_id")
+  private Book book;
 }

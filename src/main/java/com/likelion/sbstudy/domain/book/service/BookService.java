@@ -22,42 +22,42 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class BookService {
 
-    private final BookRepository bookRepository;
-    private final S3Service s3Service;
-    private final BookMapper bookMapper;
+  private final BookRepository bookRepository;
+  private final S3Service s3Service;
+  private final BookMapper bookMapper;
 
-    @Transactional
-    public BookResponse createBook(CreateBookRequest request, List<MultipartFile> images) {
+  @Transactional
+  public BookResponse createBook(CreateBookRequest request, List<MultipartFile> images) {
 
-        if (bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor()).isPresent()) {
-            throw new CustomException(BookErrorCode.BOOK_ALREADY_EXISTS);
-        }
-
-        Book book = Book.builder()
-                .title(request.getTitle())
-                .author(request.getAuthor())
-                .publisher(request.getPublisher())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .categoryList(request.getCategoryList())
-                .releaseDate(request.getReleaseDate())
-                .build();
-
-        List<BookImage> bookImages = images.stream()
-                .filter(image -> !image.isEmpty())
-                .map(image -> {
-                    String imageUrl = s3Service.uploadFile(PathName.FOLDER1, image);
-                    return BookImage.builder()
-                            .imageUrl(imageUrl)
-                            .book(book)
-                            .build();
-                })
-                .toList();
-
-        book.addBookImages(bookImages);
-
-        bookRepository.save(book);
-
-        return bookMapper.toBookResponse(book);
+    if (bookRepository.findByTitleAndAuthor(request.getTitle(), request.getAuthor()).isPresent()) {
+      throw new CustomException(BookErrorCode.BOOK_ALREADY_EXISTS);
     }
+
+    Book book =
+        Book.builder()
+            .title(request.getTitle())
+            .author(request.getAuthor())
+            .publisher(request.getPublisher())
+            .price(request.getPrice())
+            .description(request.getDescription())
+            .categoryList(request.getCategoryList())
+            .releaseDate(request.getReleaseDate())
+            .build();
+
+    List<BookImage> bookImages =
+        images.stream()
+            .filter(image -> !image.isEmpty())
+            .map(
+                image -> {
+                  String imageUrl = s3Service.uploadFile(PathName.FOLDER1, image);
+                  return BookImage.builder().imageUrl(imageUrl).book(book).build();
+                })
+            .toList();
+
+    book.addBookImages(bookImages);
+
+    bookRepository.save(book);
+
+    return bookMapper.toBookResponse(book);
+  }
 }

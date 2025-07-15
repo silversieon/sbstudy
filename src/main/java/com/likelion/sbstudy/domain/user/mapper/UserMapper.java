@@ -7,11 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public SignUpResponse toSignUpResponse(User user) {
-        return SignUpResponse.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .build();
-    }
+  public SignUpResponse toSignUpResponse(User user) {
+    return SignUpResponse.builder().userId(user.getId()).username(user.getUsername()).build();
+  }
 }
-

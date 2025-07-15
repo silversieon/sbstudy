@@ -18,43 +18,44 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = new DefaultOAuth2UserService().loadUser(request);
-        Map<String, Object> attributes = oauth2User.getAttributes();
-        String provider = request.getClientRegistration().getRegistrationId();
-        String email;
+  @Override
+  public OAuth2User loadUser(OAuth2UserRequest request) throws OAuth2AuthenticationException {
+    OAuth2User oauth2User = new DefaultOAuth2UserService().loadUser(request);
+    Map<String, Object> attributes = oauth2User.getAttributes();
+    String provider = request.getClientRegistration().getRegistrationId();
+    String email;
 
+    switch (provider) {
+      case "google" -> email = (String) attributes.get("email");
+      case "kakao" -> {
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+        email = (String) kakaoAccount.get("email");
+      }
+      case "naver" -> {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        email = (String) response.get("email");
+      }
+      default -> throw new OAuth2AuthenticationException("Unknown provider: " + provider);
+    }
+
+    User user =
+        userRepository
+            .findByUsername(email)
+            .orElseGet(() -> userRepository.save(User.fromOAuth(email, provider)));
+
+    String nameAttributeKey =
         switch (provider) {
-            case "google" -> email = (String) attributes.get("email");
-            case "kakao" -> {
-                Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-                email = (String) kakaoAccount.get("email");
-            }
-            case "naver" -> {
-                Map<String, Object> response = (Map<String, Object>) attributes.get("response");
-                email = (String) response.get("email");
-            }
-            default -> throw new OAuth2AuthenticationException("Unknown provider: " + provider);
-        }
-
-        User user = userRepository.findByUsername(email)
-                .orElseGet(() -> userRepository.save(
-                        User.fromOAuth(email, provider)));
-
-        String nameAttributeKey = switch (provider) {
-            case "google" -> "email";
-            case "kakao" -> "id";      // 카카오는 고유 ID로 식별
-            case "naver" -> "resultcode";      // 네이버도 response.id가 있음
-            default -> throw new OAuth2AuthenticationException("Unknown provider: " + provider);
+          case "google" -> "email";
+          case "kakao" -> "id"; // 카카오는 고유 ID로 식별
+          case "naver" -> "resultcode"; // 네이버도 response.id가 있음
+          default -> throw new OAuth2AuthenticationException("Unknown provider: " + provider);
         };
 
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                attributes,
-                nameAttributeKey
-        );
-    }
+    return new DefaultOAuth2User(
+        Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+        attributes,
+        nameAttributeKey);
+  }
 }
